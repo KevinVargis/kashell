@@ -71,20 +71,6 @@ int main()
     printf("\t\t$ Welcome to kash! $\n");
     printf("\033[0m");
     printf("\n");
-    // read(fhis, buff, sizeof(buff));
-    // buff = strtok(buff, "\n");
-    // int cnt = 0;
-    // while(buff != NULL)
-    // {
-    //     // printf("%s\n", parse);
-    //     hist[cnt++] = buff;
-    //     buff = strtok(NULL, "\n");
-    //     printf("%s", hist[cnt-1]);
-    // }
-    // strtok(hist[cnt-1], "\n");
-    // hist[cnt] = NULL;
-    // for(int i = 0, i <= siz; i++)
-
 
     while (1)
     {
@@ -194,18 +180,6 @@ int main()
                 }
             }
             
-            // // char yo[1000];
-            // strcpy(yo, args[0]);
-            // strcat(yo, "\n");
-            // hist[siz%20] = yo;
-
-            // strcpy(hist[siz%20], args[0]);
-            // strcat(hist[siz%20], "\n");
-            
-            
-            
-            // printf("ha\n");
-            // printf("ha\n");
             if(strcmp(args[0], "history") == 0)
             {
                 if(args[1] == NULL)
@@ -247,15 +221,5 @@ int main()
             }
             fclose(fhis);
         }
-        // for(int j = 0; j < i; j++)
-        //     printf("%s\n", args[j]);
-        
-        
-        
-        // args[0] = cmd[0];
-        //     args[i+1] = args[i];
-        //     args[i] = daddydir;
-        //     i++;
-        // strcat(arg[0], ".c");
     }
 }

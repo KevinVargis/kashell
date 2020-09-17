@@ -1,3 +1,5 @@
 *.o
 history.txt
 histno.txt
+test.c
+test.txt

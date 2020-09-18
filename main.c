@@ -116,7 +116,102 @@ int main()
             {
                 continue;
             }
-            else if(strcmp(args[0], "cd") == 0)
+            
+            int trunc = 0, append = 0, input = 0, stdo, stdi; 
+            for(int j = 0; args[j] != NULL; j++)
+                printf("%s ", args[j]);
+            printf("\n");
+            for(int j = 0; j < i; j++)
+            {
+                // printf("%s\n", args[j]);
+                if(strcmp(args[j], ">>") == 0)
+                {
+                    append = 1;
+                    // printf("a%s\n", args[j+1]);
+                    int fd = open(args[j+1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+                    // printf("%s\n", args[j+1]);
+                    stdo = dup(1);
+                    if (fd < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    if (dup2(fd, STDOUT_FILENO) < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    close(fd);
+                    for(int z = j+2; z < i; z++)
+                    {
+                        args[z-2] = args[z];
+                    }
+                    args[i-2] = NULL;
+                    i -= 2;
+                    j--;
+                }
+                else if(strcmp(args[j], ">") == 0)
+                {
+                    trunc = 1;
+                    // printf("a%s\n", args[j+1]);
+                    int fd = open(args[j+1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                    // printf("%s\n", args[j+1]);
+                    stdo = dup(1);
+                    if (fd < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    if (dup2(fd, STDOUT_FILENO) < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    close(fd);
+                    for(int z = j+2; z < i; z++)
+                    {
+                        args[z-2] = args[z];
+                    }
+                    args[i-2] = NULL;
+                    i -= 2;
+                    j--;
+                }
+                else if(strcmp(args[j], "<") == 0)
+                {
+                    input = 1;
+                    // printf("a%s\n", args[j+1]);
+                    int fd = open(args[j+1], O_RDONLY);
+                    // printf("a1%s %d\n", args[j+1], j+1);
+                    stdi = dup(0);
+                    // printf("a2%s %d\n", args[j+1], j+1);
+                    if (fd < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    // printf("a3%s %d\n", args[j+1], j+1);
+                    if (dup2(fd, STDIN_FILENO) < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    // printf("a4%s %d\n", args[j+1], j+1);
+                    close(fd);
+                    // printf("a5%s %d\n", args[j+1], j+1);
+                    for(int z = j+2; z < i; z++)
+                    {
+                        // printf("a6%s %d\n", args[j+1], j+1);
+                        // printf("1%s %s %d\n", args[z-2], args[z], z-2);
+                        // for(int p = 0; p <= strlen(args[z]); p++)
+                            args[z-2] = args[z];
+                        // printf("a7%s %d\n", args[j+1], j+1);
+                        // printf("2%s %s\n", args[z-2], args[z]);
+                    }
+                    args[i-2] = NULL;
+                    i -= 2;
+                    j--;
+                }
+                // printf("NULL at %d\n", i);
+            }
+            // for(int j = 0; args[j] != NULL; j++)
+            //     printf("%s ", args[j]);
+                //  write(1, "", strlen(""));
+            // printf("\n");
+            if(strcmp(args[0], "cd") == 0)
             {
                 if(i <= 2)
                     cd(args, daddydir);
@@ -205,7 +300,7 @@ int main()
             }
             // for(int i = ((siz-4) > 0 ? (siz-4) : 0); i <= siz; i++)
             //     printf("%s", hist[i%20]);
-            printf("\n");
+            // printf("\n");
             no[0] = siz;
             close(fno);
             
@@ -220,6 +315,18 @@ int main()
                 // printf("%d %s", i%5, hist[i%5]);
             }
             fclose(fhis);
+
+            if((trunc == 1) || (append == 1))
+            {
+                dup2(stdo ,STDOUT_FILENO);
+                close(stdo);
+            }
+            if(input == 1)
+            {
+                dup2(stdi, STDIN_FILENO);
+                close(stdi);
+            }
+
         }
     }
 }

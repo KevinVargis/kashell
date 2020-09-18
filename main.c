@@ -71,20 +71,6 @@ int main()
     printf("\t\t$ Welcome to kash! $\n");
     printf("\033[0m");
     printf("\n");
-    // read(fhis, buff, sizeof(buff));
-    // buff = strtok(buff, "\n");
-    // int cnt = 0;
-    // while(buff != NULL)
-    // {
-    //     // printf("%s\n", parse);
-    //     hist[cnt++] = buff;
-    //     buff = strtok(NULL, "\n");
-    //     printf("%s", hist[cnt-1]);
-    // }
-    // strtok(hist[cnt-1], "\n");
-    // hist[cnt] = NULL;
-    // for(int i = 0, i <= siz; i++)
-
 
     while (1)
     {
@@ -130,7 +116,97 @@ int main()
             {
                 continue;
             }
-            else if(strcmp(args[0], "cd") == 0)
+            
+            int trunc = 0, append = 0, input = 0, stdo, stdi; 
+            for(int j = 0; args[j] != NULL; j++)
+                printf("%s ", args[j]);
+            printf("\n");
+            for(int j = 0; j < i; j++)
+            {
+                // printf("%s\n", args[j]);
+                if(strcmp(args[j], ">>") == 0)
+                {
+                    append = 1;
+                    // printf("a%s\n", args[j+1]);
+                    int fd = open(args[j+1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+                    // printf("%s\n", args[j+1]);
+                    stdo = dup(1);
+                    if (fd < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    if (dup2(fd, STDOUT_FILENO) < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    close(fd);
+                    for(int z = j+2; z < i; z++)
+                    {
+                        args[z-2] = args[z];
+                    }
+                    args[i-2] = NULL;
+                    i -= 2;
+                    j--;
+                }
+                else if(strcmp(args[j], ">") == 0)
+                {
+                    trunc = 1;
+
+                    int fd = open(args[j+1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+                    stdo = dup(1);
+                    if (fd < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    if (dup2(fd, STDOUT_FILENO) < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    close(fd);
+                    for(int z = j+2; z < i; z++)
+                    {
+                        args[z-2] = args[z];
+                    }
+                    args[i-2] = NULL;
+                    i -= 2;
+                    j--;
+                }
+                else if(strcmp(args[j], "<") == 0)
+                {
+                    input = 1;
+
+                    int fd = open(args[j+1], O_RDONLY);
+
+                    stdi = dup(0);
+
+                    if (fd < 0) {
+                        perror("kash");
+                        continue;
+                    }
+
+                    if (dup2(fd, STDIN_FILENO) < 0) {
+                        perror("kash");
+                        continue;
+                    }
+                    close(fd);
+
+                    for(int z = j+2; z < i; z++)
+                    {
+                        
+                            args[z-2] = args[z];
+                    }
+                    args[i-2] = NULL;
+                    i -= 2;
+                    j--;
+                }
+                // printf("NULL at %d\n", i);
+            }
+            // for(int j = 0; args[j] != NULL; j++)
+            //     printf("%s ", args[j]);
+                //  write(1, "", strlen(""));
+            // printf("\n");
+            if(strcmp(args[0], "cd") == 0)
             {
                 if(i <= 2)
                     cd(args, daddydir);
@@ -194,18 +270,6 @@ int main()
                 }
             }
             
-            // // char yo[1000];
-            // strcpy(yo, args[0]);
-            // strcat(yo, "\n");
-            // hist[siz%20] = yo;
-
-            // strcpy(hist[siz%20], args[0]);
-            // strcat(hist[siz%20], "\n");
-            
-            
-            
-            // printf("ha\n");
-            // printf("ha\n");
             if(strcmp(args[0], "history") == 0)
             {
                 if(args[1] == NULL)
@@ -229,9 +293,7 @@ int main()
                     }
                 }
             }
-            // for(int i = ((siz-4) > 0 ? (siz-4) : 0); i <= siz; i++)
-            //     printf("%s", hist[i%20]);
-            printf("\n");
+            
             no[0] = siz;
             close(fno);
             
@@ -246,16 +308,18 @@ int main()
                 // printf("%d %s", i%5, hist[i%5]);
             }
             fclose(fhis);
+
+            if((trunc == 1) || (append == 1))
+            {
+                dup2(stdo ,STDOUT_FILENO);
+                close(stdo);
+            }
+            if(input == 1)
+            {
+                dup2(stdi, STDIN_FILENO);
+                close(stdi);
+            }
+
         }
-        // for(int j = 0; j < i; j++)
-        //     printf("%s\n", args[j]);
-        
-        
-        
-        // args[0] = cmd[0];
-        //     args[i+1] = args[i];
-        //     args[i] = daddydir;
-        //     i++;
-        // strcat(arg[0], ".c");
     }
 }

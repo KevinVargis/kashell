@@ -151,9 +151,9 @@ int main()
                 else if(strcmp(args[j], ">") == 0)
                 {
                     trunc = 1;
-                    // printf("a%s\n", args[j+1]);
+
                     int fd = open(args[j+1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-                    // printf("%s\n", args[j+1]);
+
                     stdo = dup(1);
                     if (fd < 0) {
                         perror("kash");
@@ -175,31 +175,26 @@ int main()
                 else if(strcmp(args[j], "<") == 0)
                 {
                     input = 1;
-                    // printf("a%s\n", args[j+1]);
+
                     int fd = open(args[j+1], O_RDONLY);
-                    // printf("a1%s %d\n", args[j+1], j+1);
+
                     stdi = dup(0);
-                    // printf("a2%s %d\n", args[j+1], j+1);
+
                     if (fd < 0) {
                         perror("kash");
                         continue;
                     }
-                    // printf("a3%s %d\n", args[j+1], j+1);
+
                     if (dup2(fd, STDIN_FILENO) < 0) {
                         perror("kash");
                         continue;
                     }
-                    // printf("a4%s %d\n", args[j+1], j+1);
                     close(fd);
-                    // printf("a5%s %d\n", args[j+1], j+1);
+
                     for(int z = j+2; z < i; z++)
                     {
-                        // printf("a6%s %d\n", args[j+1], j+1);
-                        // printf("1%s %s %d\n", args[z-2], args[z], z-2);
-                        // for(int p = 0; p <= strlen(args[z]); p++)
+                        
                             args[z-2] = args[z];
-                        // printf("a7%s %d\n", args[j+1], j+1);
-                        // printf("2%s %s\n", args[z-2], args[z]);
                     }
                     args[i-2] = NULL;
                     i -= 2;
@@ -298,9 +293,7 @@ int main()
                     }
                 }
             }
-            // for(int i = ((siz-4) > 0 ? (siz-4) : 0); i <= siz; i++)
-            //     printf("%s", hist[i%20]);
-            // printf("\n");
+            
             no[0] = siz;
             close(fno);
             

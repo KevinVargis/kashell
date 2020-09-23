@@ -1,4 +1,6 @@
-int back_bois = -1;
+#ifndef __AMP_H
+#define __AMP_H
+int back_bois;
 
 struct process
 {
@@ -7,3 +9,5 @@ struct process
 };
 
 struct process proc_list[1000];
+
+#endif

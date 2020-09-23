@@ -1,7 +1,7 @@
 all: johnny_kash
 
-johnny_kash: main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o
-	gcc main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o -o johnny_kash
+johnny_kash: main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o exec.o
+	gcc main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o exec.o -o johnny_kash
 
 main.o: main.c
 	gcc -c main.c
@@ -23,3 +23,8 @@ ls.o: ls.c ls.h
 
 pinfo.o: pinfo.c pinfo.h 
 	gcc -c pinfo.c
+
+exec.o: exec.c exec.h 
+	gcc -c exec.c
+# run: *.c
+# 	gcc -o run *.c

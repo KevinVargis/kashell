@@ -49,16 +49,18 @@ void print_perm(char* path, char* args[], char* daddydir)
         {
             struct passwd* uid = getpwuid(sfile.st_uid);
             struct group* gid = getgrgid(sfile.st_gid);
-            write(1, (S_ISDIR(sfile.st_mode))? "d":"-", strlen((S_ISDIR(sfile.st_mode))? "d":"-"));
-            write(1, (sfile.st_mode & S_IRUSR)? "r":"-", strlen((sfile.st_mode & S_IRUSR)? "r":"-"));
-            write(1, (sfile.st_mode & S_IWUSR)? "w":"-", strlen((sfile.st_mode & S_IWUSR)? "w":"-"));
-            write(1, (sfile.st_mode & S_IXUSR)? "x":"-", strlen((sfile.st_mode & S_IXUSR)? "x":"-"));
-            write(1, (sfile.st_mode & S_IRGRP)? "r":"-", strlen((sfile.st_mode & S_IRGRP)? "r":"-"));
-            write(1, (sfile.st_mode & S_IWGRP)? "w":"-", strlen((sfile.st_mode & S_IWGRP)? "w":"-"));
-            write(1, (sfile.st_mode & S_IXGRP)? "x":"-", strlen((sfile.st_mode & S_IXGRP)? "x":"-"));
-            write(1, (sfile.st_mode & S_IROTH)? "r":"-", strlen((sfile.st_mode & S_IROTH)? "r":"-"));
-            write(1, (sfile.st_mode & S_IWOTH)? "w":"-", strlen((sfile.st_mode & S_IWOTH)? "w":"-"));
-            write(1, (sfile.st_mode & S_IXOTH)? "x":"-", strlen((sfile.st_mode & S_IXOTH)? "x ":"- "));   
+            printf((S_ISDIR(sfile.st_mode))? "d":"-");
+            printf((sfile.st_mode & S_IRUSR)? "r":"-");
+            printf((sfile.st_mode & S_IWUSR)? "w":"-");
+            printf((sfile.st_mode & S_IXUSR)? "x":"-");
+            printf((sfile.st_mode & S_IRGRP)? "r":"-");
+            printf((sfile.st_mode & S_IWGRP)? "w":"-");
+            printf((sfile.st_mode & S_IXGRP)? "x":"-");
+            printf((sfile.st_mode & S_IROTH)? "r":"-");
+            printf((sfile.st_mode & S_IWOTH)? "w":"-");
+            printf((sfile.st_mode & S_IXOTH)? "x":"-");   
+            // printf((S_ISDIR(sfile.st_mode))? "foo":"bar");
+
             // printf("1\n");
             printf("%5ld", sfile.st_nlink);
             // printf("1\n");
@@ -150,6 +152,7 @@ void ls(char* args[], int argc, char* daddydir)
     {
         while(optind < argc)
         {
+            strcpy(s, args[optind]);
             if(args[optind][0] == '~')
             {
                 strcpy(s, daddydir);

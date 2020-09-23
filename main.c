@@ -1,11 +1,5 @@
-#include "prompt.h"
-#include "cd.h"
-#include "pwd.h"
-#include "echo.h"
-#include "ls.h"
-#include "pinfo.h"
 #include "headers.h"
-#include "amp.h"
+#include "builtins.h"
 
 void cld_exit(int sig)
 {
@@ -31,15 +25,11 @@ void cld_exit(int sig)
 
 int main()
 {
-    char daddydir[1000];
     getcwd(daddydir, sizeof(daddydir));
-    char* cmd[] = {"./cd"};
-    char* buff  = (char *)calloc(20000, sizeof(char));
-    char hist[20][1000];
-    FILE* fhis;
-    int siz = -1, no[1];
+    buff  = (char *)calloc(20000, sizeof(char));
+    siz = -1;
+    back_bois = -1;
     no[0] = -1;
-    char hispath[200], hisnopath[200];
     strcpy(hispath, daddydir);
     strcat(hispath, "/history.txt");
     strcpy(hisnopath, daddydir);
@@ -56,7 +46,7 @@ int main()
         read(fno, no, sizeof(no));
         fhis = fopen(hispath, "r");
     }
-
+    // close(fno);
     // printf("%d\n", no[0]);
     siz = no[0];
 
@@ -75,12 +65,14 @@ int main()
     while (1)
     {
         char* parse;
+        // memset(parse, 0, sizeof(parse));
         char* cmd[100];
         char cwd[1000];
         getcwd(cwd, sizeof(cwd));
         // strcat(cwd, "/yoo");
-    
+        
         parse = prompt(cwd, daddydir);
+        // printf("1%s\n", parse);
         siz++;
         strcpy(hist[siz%20], parse);
         // strcat(hist[siz%20]);
@@ -94,206 +86,86 @@ int main()
         }
         for(int p = 0; p < k; p++)
         {
-            char* args[20];
-            cmd[p] = strtok(cmd[p], " \t");
-            int i = 0, forkReturn;
+            char* pip[100];
+            int pipe_count = 0;
+            cmd[p] = strtok(cmd[p], "|");
             while(cmd[p] != NULL)
             {
                 // printf("%s\n", parse);
-                args[i++] = cmd[p];
-                cmd[p] = strtok(NULL, " \t");
+                pip[pipe_count++] = cmd[p];
+                cmd[p] = strtok(NULL, "|");
             }
             if(p == k -1)
             {
-                strtok(args[i-1], "\n");
-                args[i] = NULL;
+                strtok(pip[pipe_count-1], "\n");
+                pip[pipe_count] = NULL;
             }
-            // printf("A\n");
+        
+            // for(int j = 0; pip[j] != NULL; j++)
+            // printf("%s %u ", pip[pipe_count-1], pipe_count-1);
             // printf("\n");
-            // printf("A\n");
 
-            if(strcmp(args[0], "\n") == 0)
+            // int pipefds[2*pipe_count];
+
+            // for(int i = 0; i < pipe_count; i++)
+            // {
+            //     if(pipe(pipefds + i*2) < 0) 
+            //     {
+            //         perror("pipe");
+            //         continue;
+            //     }
+            // }
+            int stdo, stdi;
+            stdi = dup(0);
+            stdo = dup(1);
+            int pipe_fd[2];
+            int fpid;
+            int fdd = 0;				/* Backup */
+
+            for(int pi = 0; pi < pipe_count - 1; pi++)
             {
-                continue;
-            }
-            
-            int trunc = 0, append = 0, input = 0, stdo, stdi; 
-            for(int j = 0; args[j] != NULL; j++)
-                printf("%s ", args[j]);
-            printf("\n");
-            for(int j = 0; j < i; j++)
-            {
-                // printf("%s\n", args[j]);
-                if(strcmp(args[j], ">>") == 0)
+                pipe(pipe_fd);
+                fpid = fork();
+                if(fpid < 0) 
                 {
-                    append = 1;
-                    // printf("a%s\n", args[j+1]);
-                    int fd = open(args[j+1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-                    // printf("%s\n", args[j+1]);
-                    stdo = dup(1);
-                    if (fd < 0) {
-                        perror("kash");
-                        continue;
-                    }
-                    if (dup2(fd, STDOUT_FILENO) < 0) {
-                        perror("kash");
-                        continue;
-                    }
-                    close(fd);
-                    for(int z = j+2; z < i; z++)
+                    perror("pipe");
+                    exit(1);
+                }
+                else if (fpid == 0) 
+                {
+                    fflush(NULL);
+                    dup2(fdd, 0);
+                    fflush(NULL);
+                    if (pip[pi+1] != NULL) 
                     {
-                        args[z-2] = args[z];
+                        dup2(pipe_fd[1], 1);
                     }
-                    args[i-2] = NULL;
-                    i -= 2;
-                    j--;
-                }
-                else if(strcmp(args[j], ">") == 0)
-                {
-                    trunc = 1;
+                    
+                    close(pipe_fd[0]);
+                    fflush(NULL);
+                    exec(pip[pi], pipe_count);
+                    fflush(NULL);
+                    // execvp((*pip)[0], *pip);
 
-                    int fd = open(args[j+1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                    exit(0);
+                }
+                else 
+                {
+                    wait(NULL); 		/* Collect childs */
+                    close(pipe_fd[1]);
+                    // close(fdd);
+                    fdd = pipe_fd[0];
+                    // pip++;
+                }
+            }
 
-                    stdo = dup(1);
-                    if (fd < 0) {
-                        perror("kash");
-                        continue;
-                    }
-                    if (dup2(fd, STDOUT_FILENO) < 0) {
-                        perror("kash");
-                        continue;
-                    }
-                    close(fd);
-                    for(int z = j+2; z < i; z++)
-                    {
-                        args[z-2] = args[z];
-                    }
-                    args[i-2] = NULL;
-                    i -= 2;
-                    j--;
-                }
-                else if(strcmp(args[j], "<") == 0)
-                {
-                    input = 1;
+            dup2(stdo, STDOUT_FILENO);
+            dup2(fdd, STDIN_FILENO);
+            exec(pip[pipe_count-1], pipe_count);
 
-                    int fd = open(args[j+1], O_RDONLY);
+            dup2(stdi, STDIN_FILENO);
+            dup2(stdo, STDOUT_FILENO); 
 
-                    stdi = dup(0);
-
-                    if (fd < 0) {
-                        perror("kash");
-                        continue;
-                    }
-
-                    if (dup2(fd, STDIN_FILENO) < 0) {
-                        perror("kash");
-                        continue;
-                    }
-                    close(fd);
-
-                    for(int z = j+2; z < i; z++)
-                    {
-                        
-                            args[z-2] = args[z];
-                    }
-                    args[i-2] = NULL;
-                    i -= 2;
-                    j--;
-                }
-                // printf("NULL at %d\n", i);
-            }
-            // for(int j = 0; args[j] != NULL; j++)
-            //     printf("%s ", args[j]);
-                //  write(1, "", strlen(""));
-            // printf("\n");
-            if(strcmp(args[0], "cd") == 0)
-            {
-                if(i <= 2)
-                    cd(args, daddydir);
-                else
-                {
-                    printf("cd: Wrong number of arguments\n");
-                }
-            }
-            else if(strcmp(args[0], "pwd") == 0)
-            {
-                pwd();
-            }
-            else if(strcmp(args[0], "echo") == 0)
-            {
-                echo(args);
-            }
-            else if(strcmp(args[0], "ls") == 0)
-            {
-                ls(args, i, daddydir);
-            }
-            else if(strcmp(args[0], "pinfo") == 0)
-            {
-                pinfo(args);
-            }
-            else if(strcmp(args[i-1], "&") == 0)
-            {
-                i--;
-                args[i] = NULL;
-                forkReturn = fork();
-                setpgid(0, 0);
-                if(forkReturn < 0)
-                    perror("Couldnt create fork");
-                else if(forkReturn == 0)
-                {
-                    if(execvp(args[0], args) < 0)
-                        perror(args[0]);
-                    // kill(getpid(), SIGKILL);
-                }
-                else
-                {
-                    back_bois++;
-                    strcpy(proc_list[back_bois].pname, args[0]);
-                    proc_list[back_bois].pid = forkReturn;
-                    printf("[%d] %d %s\n", back_bois+1, forkReturn, proc_list[back_bois].pname);
-                }
-            }
-            else if(strcmp(args[0], "history") != 0)
-            {
-                forkReturn = fork();
-                if(forkReturn < 0)
-                    perror("Couldnt create fork");
-                else if(forkReturn == 0)
-                {
-                    if(execvp(args[0], args) < 0)
-                        perror(args[0]);
-                    kill(getpid(), SIGKILL);
-                }
-                else
-                {
-                    wait(NULL);
-                }
-            }
-            
-            if(strcmp(args[0], "history") == 0)
-            {
-                if(args[1] == NULL)
-                {
-                    for(int i = ((siz-9) > 0 ? (siz-9) : 0); i <= siz; i++)
-                        printf("%s", hist[i%20]);
-                }
-                else
-                {
-                    int ar = atoi(args[1]);
-                    // printf("%s %d\n", args[1], ar);
-
-                    if(ar == 0)
-                        printf("history: Invalid Arguments\n");
-                    else if(ar > 20)
-                        printf("history: Only 20 entries stored\n");
-                    else
-                    {
-                        for(int i = ((siz-ar+1) > 0 ? (siz-ar+1) : 0); i <= siz; i++)
-                            printf("%s", hist[i%20]);
-                    }
-                }
-            }
-            
             no[0] = siz;
             close(fno);
             
@@ -308,18 +180,7 @@ int main()
                 // printf("%d %s", i%5, hist[i%5]);
             }
             fclose(fhis);
-
-            if((trunc == 1) || (append == 1))
-            {
-                dup2(stdo ,STDOUT_FILENO);
-                close(stdo);
-            }
-            if(input == 1)
-            {
-                dup2(stdi, STDIN_FILENO);
-                close(stdi);
-            }
-
+            // }
         }
     }
 }

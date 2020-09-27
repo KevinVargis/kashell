@@ -1,4 +1,13 @@
 *.txt
 *.o
-*test.c
+test.c
 test
+.swh
+.swi
+.swj
+.swk
+.swl
+.swm
+.swn
+.swo
+.swp

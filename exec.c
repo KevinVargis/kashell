@@ -29,7 +29,7 @@ void exec(char pip[], int pipe_count)
         return;
     }
     
-    int trunc = 0, append = 0, input = 0, stdo, stdi, bgc; 
+    int trunc = 0, append = 0, input = 0, stdo, stdi; 
     // for(int j = 0; args[j] != NULL; j++)
     //     printf("%s ", args[j]);
     // printf("\n");
@@ -143,7 +143,7 @@ void exec(char pip[], int pipe_count)
     else if(strcmp(args[0], "pinfo") == 0)
     {
         pinfo(args);
-        printf("xhaxha\n");
+        // printf("xhaxha\n");
     }
     else if(strcmp(args[0], "setenv") == 0)
     {
@@ -181,6 +181,19 @@ void exec(char pip[], int pipe_count)
         
         
     }
+    else if(strcmp(args[0], "jobs") == 0)
+    {
+        jobs();
+    }
+    else if(strcmp(args[0], "kjob") == 0)
+    {
+        if(i <= 2)
+            printf("kjob: Too few arguments\n");
+        else if(i == 3)
+            kjob(args);
+        else
+            printf("kjob: Too many arguments\n");
+    }
     else if(strcmp(args[i-1], "&") == 0)
     {
         i--;
@@ -195,17 +208,9 @@ void exec(char pip[], int pipe_count)
             {
                 perror(args[0]);
                 bgc = 1;
+                kill(getpid(), SIGKILL);
             }
-            else
-            {
-                bgc = 2;
-                // back_bois++;
-                // int p = getppid();
-                // strcpy(proc_list[back_bois].pname, args[0]);
-                // proc_list[back_bois].pid = p;
-                // printf("[%d] %d %s\n", back_bois+1, p, proc_list[back_bois].pname);
-            }
-            
+                     
             // kill(getpid(), SIGKILL);
         }
         else
@@ -213,10 +218,11 @@ void exec(char pip[], int pipe_count)
             // sleep(1);
             // if(bgc == 2)
             // {
-                back_bois++;
-                strcpy(proc_list[back_bois].pname, args[0]);
-                proc_list[back_bois].pid = forkReturn;
-                printf("[%d] %d %s\n", back_bois+1, forkReturn, proc_list[back_bois].pname);
+                add_bg(args, forkReturn);
+                // back_bois++;
+                // strcpy(proc_list[back_bois].pname, args[0]);
+                // proc_list[back_bois].pid = forkReturn;
+                // printf("[%d] %d %s\n", back_bois+1, forkReturn, proc_list[back_bois].pname);
             // }
         }
     }
@@ -236,6 +242,7 @@ void exec(char pip[], int pipe_count)
             wait(NULL);
         }
     }
+    // printf("%d\n", bgc);
     fflush(NULL);
     if(strcmp(args[0], "history") == 0)
     {

@@ -6,6 +6,7 @@ struct process
 {
     int pid;
     char pname[1500];
+    // char status[100];
 };
 
 struct process proc_list[1000];

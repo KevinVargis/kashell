@@ -7,7 +7,7 @@ void cld_exit(int sig)
     signal(SIGCHLD, cld_exit);
     while ((pid = waitpid(-1, &status, WNOHANG)) != -1)
     {
-        int chk = 0;
+        int chk = 1;
         if(pid == 0)
             break;
         while(chk <= back_bois)
@@ -16,19 +16,41 @@ void cld_exit(int sig)
                 break;
             chk++;
         }
-        printf("%s with pid %d exited normally\n", proc_list[chk].pname, pid);
-        heh = 1;
+        if((WIFEXITED(status)))
+        {
+            printf("\n%s with pid %d ", proc_list[chk].pname, pid);
+            if (WEXITSTATUS(status) == 0)
+                printf("\nexited normally with exit status: %d\n", WIFEXITED(status));
+            else
+                printf("\nexited abnormally\n");
+            heh = 1;
+
+        }
+        else
+        {
+            printf("\n%s with pid %d exited abnormally\n", proc_list[chk].pname, pid);
+        }
+        for(int p = chk; p < back_bois; p++)
+        {
+            proc_list[p].pid = proc_list[p+1].pid;
+            strcpy(proc_list[p].pname, proc_list[p+1].pname);
+            // strcpy(proc_list[p].status, proc_list[p+1].status);
+        }
+        back_bois--;
+       
     }
     if(heh)
         printf("Press <Enter> to continue\n");
 }
+
+
 
 int main()
 {
     getcwd(daddydir, sizeof(daddydir));
     buff  = (char *)calloc(20000, sizeof(char));
     siz = -1;
-    back_bois = -1;
+    back_bois = 0;
     no[0] = -1;
     strcpy(hispath, daddydir);
     strcat(hispath, "/history.txt");
@@ -165,6 +187,7 @@ int main()
 
             dup2(stdi, STDIN_FILENO);
             dup2(stdo, STDOUT_FILENO); 
+            // printf("ah%d\n", bgc);
 
             no[0] = siz;
             close(fno);

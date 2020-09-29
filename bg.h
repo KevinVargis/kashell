@@ -3,5 +3,6 @@
 
 void jobs();
 void add_bg(char* args[], int pid);
+void del_bg(int pno);
 
 #endif

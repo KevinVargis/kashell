@@ -194,6 +194,16 @@ void exec(char pip[], int pipe_count)
         else
             printf("kjob: Too many arguments\n");
     }
+    else if(strcmp(args[0], "fg") == 0)
+    {
+        int pno = atoi(args[1]);
+        if(i <= 1)
+            printf("fg: Too few arguments\n");
+        else if(i == 2)
+            fg(pno);
+        else
+            printf("fg: Too many arguments\n");
+    }
     else if(strcmp(args[i-1], "&") == 0)
     {
         i--;

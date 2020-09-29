@@ -1,7 +1,7 @@
 all: johnny_kash
 
-johnny_kash: main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o exec.o bg.o kjob.o
-	gcc main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o exec.o bg.o kjob.o -o johnny_kash
+johnny_kash: main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o exec.o bg.o fg.o kjob.o
+	gcc main.o prompt.o cd.o pwd.o echo.o ls.o pinfo.o exec.o bg.o fg.o kjob.o -o johnny_kash
 
 main.o: main.c
 	gcc -c main.c
@@ -32,5 +32,8 @@ bg.o: bg.c bg.h
 
 kjob.o: kjob.c kjob.h 
 	gcc -c kjob.c
+
+fg.o: fg.c fg.h 
+	gcc -c fg.c
 # run: *.c
 # 	gcc -o run *.c

@@ -7,3 +7,5 @@
 #include "amp.h"
 #include "exec.h"
 #include "bg.h"
+#include "kjob.h"
+#include "fg.h"

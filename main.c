@@ -30,13 +30,14 @@ void cld_exit(int sig)
         {
             printf("\n%s with pid %d exited abnormally\n", proc_list[chk].pname, pid);
         }
-        for(int p = chk; p < back_bois; p++)
-        {
-            proc_list[p].pid = proc_list[p+1].pid;
-            strcpy(proc_list[p].pname, proc_list[p+1].pname);
-            // strcpy(proc_list[p].status, proc_list[p+1].status);
-        }
-        back_bois--;
+        del_bg(chk);
+        // for(int p = chk; p < back_bois; p++)
+        // {
+        //     proc_list[p].pid = proc_list[p+1].pid;
+        //     strcpy(proc_list[p].pname, proc_list[p+1].pname);
+        //     // strcpy(proc_list[p].status, proc_list[p+1].status);
+        // }
+        // back_bois--;
        
     }
     if(heh)

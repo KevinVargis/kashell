@@ -19,10 +19,10 @@ void cld_exit(int sig)
         if((WIFEXITED(status)))
         {
             printf("\n%s with pid %d ", proc_list[chk].pname, pid);
-            if (WEXITSTATUS(status) == 0)
-                printf("\nexited normally with exit status: %d\n", WIFEXITED(status));
-            else
-                printf("\nexited abnormally\n");
+            // if (WEXITSTATUS(status) == 0)
+                printf("\nexited normally with exit status: %d\n", WEXITSTATUS(status));
+            // else
+            //     printf("\nexited abnormally\n");
             heh = 1;
 
         }

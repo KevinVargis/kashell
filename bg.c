@@ -26,6 +26,27 @@ void del_bg(int pno)
     back_bois--;
 }
 
+void bg(int pno)
+{
+    if((pno > back_bois) || (pno < 1))
+        printf("fg: invalid job number\n");
+    else
+    {
+        kill(proc_list[pno].pid, SIGCONT);
+    }
+}
+
+void overkill()
+{
+    // printf("%d\n", back_bois);
+    while (back_bois > 0)
+    {
+        // printf("%d\n", back_bois);
+        if(kill(proc_list[back_bois].pid, 9) < 0)
+            perror("overkill");
+    }
+}
+
 void jobs()
 {
     for(int i = 1; i <= back_bois; i++)

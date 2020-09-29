@@ -204,6 +204,25 @@ void exec(char pip[], int pipe_count)
         else
             printf("fg: Too many arguments\n");
     }
+    else if(strcmp(args[0], "bg") == 0)
+    {
+        int pno = atoi(args[1]);
+        if(i <= 1)
+            printf("bg: Too few arguments\n");
+        else if(i == 2)
+            bg(pno);
+        else
+            printf("bg: Too many arguments\n");
+    }
+    else if(strcmp(args[0], "overkill") == 0)
+    {
+        if(i <= 0)
+            printf("overkill: Too few arguments\n");
+        else if(i == 1)
+            overkill();
+        else
+            printf("overkill: Too many arguments\n");
+    }
     else if(strcmp(args[i-1], "&") == 0)
     {
         i--;

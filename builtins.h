@@ -9,3 +9,4 @@
 #include "bg.h"
 #include "kjob.h"
 #include "fg.h"
+#include "handlers.h"

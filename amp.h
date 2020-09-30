@@ -10,5 +10,6 @@ struct process
 };
 
 struct process proc_list[1000];
+struct process last_boi;
 
 #endif

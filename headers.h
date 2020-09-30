@@ -20,5 +20,5 @@ char hist[20][1000];
 FILE* fhis;
 int siz, no[1];
 char hispath[200], hisnopath[200];
-int fno, bgc;
+int fno, kash_id;
 #endif

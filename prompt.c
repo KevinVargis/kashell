@@ -1,4 +1,4 @@
-#include "prompt.h"
+#include "builtins.h"
 #include "headers.h"
 
 char* prompt(char* path, char* daddydir) {
@@ -57,8 +57,14 @@ char* prompt(char* path, char* daddydir) {
 
     char* in_buf = malloc(1000 * sizeof(char)); 
     size_t in_len = sizeof(in_buf);
-    // printf("%s", ter_name);
-    getline(&in_buf, &in_len, stdin);    
+    
+    long long int yo = getline(&in_buf, &in_len, stdin); 
+    // printf("%lld\n", yo);
+    if(yo == -1)
+    {
+        overkill();
+        exit(0);
+    } 
     for(int i = strlen(in_buf)-2; (i >= 0) && (in_buf[i] == ' '); i--)
     { 
         in_buf[i] = '\0';

@@ -9,6 +9,8 @@ void fg(int pno)
     {
         signal(SIGTTOU, SIG_IGN);
         signal(SIGTTIN, SIG_IGN);
+        last_boi.pid = proc_list[pno].pid;
+        strcpy(last_boi.pname, proc_list[pno].pname);
         tcsetpgrp(0, getpgid(proc_list[pno].pid));
         kill(proc_list[pno].pid, SIGCONT);
         waitpid(getpgid(proc_list[pno].pid), NULL, WUNTRACED);

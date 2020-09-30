@@ -118,7 +118,7 @@ void exec(char pip[], int pipe_count)
     //     printf("%s ", args[j]);
         //  write(1, "", strlen(""));
     // printf("\n");
-    bgc = 0;
+    // bgc = 0;
     if(strcmp(args[0], "cd") == 0)
     {
         if(i <= 2)
@@ -223,6 +223,18 @@ void exec(char pip[], int pipe_count)
         else
             printf("overkill: Too many arguments\n");
     }
+    else if(strcmp(args[0], "quit") == 0)
+    {
+        if(i <= 0)
+            printf("quit: Too few arguments\n");
+        else if(i == 1)
+        {
+            overkill();
+            exit(0);
+        }
+        else
+            printf("quit: Too many arguments\n");
+    }
     else if(strcmp(args[i-1], "&") == 0)
     {
         i--;
@@ -236,7 +248,7 @@ void exec(char pip[], int pipe_count)
             if(execvp(args[0], args) < 0)
             {
                 perror(args[0]);
-                bgc = 1;
+                // bgc = 1;
                 kill(getpid(), SIGKILL);
             }
                      
@@ -258,6 +270,14 @@ void exec(char pip[], int pipe_count)
     else if(strcmp(args[0], "history") != 0)
     {
         forkReturn = fork();
+        last_boi.pid = forkReturn;
+        strcpy(last_boi.pname, args[0]);
+        for(int i = 1; (args[i] != NULL) && strcmp(args[i], "&"); i++)
+        {
+            strcat(last_boi.pname, " ");
+            strcat(last_boi.pname, args[i]);
+        }
+        
         if(forkReturn < 0)
             perror("Couldnt create fork");
         else if(forkReturn == 0)

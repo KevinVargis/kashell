@@ -1,51 +1,6 @@
 #include "headers.h"
 #include "builtins.h"
 
-void cld_exit(int sig)
-{
-    int pid, status, heh = 0;
-    signal(SIGCHLD, cld_exit);
-    while ((pid = waitpid(-1, &status, WNOHANG)) != -1)
-    {
-        int chk = 1;
-        if(pid == 0)
-            break;
-        while(chk <= back_bois)
-        {
-            if(proc_list[chk].pid == pid)
-                break;
-            chk++;
-        }
-        if((WIFEXITED(status)))
-        {
-            printf("\n%s with pid %d ", proc_list[chk].pname, pid);
-            // if (WEXITSTATUS(status) == 0)
-                printf("\nexited normally with exit status: %d\n", WEXITSTATUS(status));
-            // else
-            //     printf("\nexited abnormally\n");
-            heh = 1;
-
-        }
-        else
-        {
-            printf("\n%s with pid %d exited abnormally\n", proc_list[chk].pname, pid);
-        }
-        del_bg(chk);
-        // for(int p = chk; p < back_bois; p++)
-        // {
-        //     proc_list[p].pid = proc_list[p+1].pid;
-        //     strcpy(proc_list[p].pname, proc_list[p+1].pname);
-        //     // strcpy(proc_list[p].status, proc_list[p+1].status);
-        // }
-        // back_bois--;
-       
-    }
-    if(heh)
-        printf("Press <Enter> to continue\n");
-}
-
-
-
 int main()
 {
     getcwd(daddydir, sizeof(daddydir));
@@ -72,22 +27,28 @@ int main()
     // close(fno);
     // printf("%d\n", no[0]);
     siz = no[0];
+    kash_id = getpid();
 
     for(int i = ((siz-19) > 0 ? (siz-19) : 0); i <= siz; i++)
         fgets(hist[i%20], 100, fhis);    
     fclose(fhis);
 
     signal(SIGCHLD, cld_exit);
+    // signal(SIGTSTP, ctrl_z);
 
     printf("\n");
     printf("\033[1;33m");
     printf("\t\t$ Welcome to kash! $\n");
     printf("\033[0m");
     printf("\n");
+    // printf("Shell id - %d\n", kash_id);
 
     while (1)
     {
         char* parse;
+        signal(SIGTSTP, ctrl_z);
+        signal(SIGINT, ctrl_c);
+        last_boi.pid = -1;
         // memset(parse, 0, sizeof(parse));
         char* cmd[100];
         char cwd[1000];
@@ -95,7 +56,7 @@ int main()
         // strcat(cwd, "/yoo");
         
         parse = prompt(cwd, daddydir);
-        // printf("1%s\n", parse);
+        // printf("%ld\n", strlen(parse));
         siz++;
         strcpy(hist[siz%20], parse);
         // strcat(hist[siz%20]);

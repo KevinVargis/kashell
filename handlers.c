@@ -41,23 +41,38 @@ void cld_exit(int sig)
        
     }
     if(heh)
-        printf("Press <Enter> to continue\n");
+    {
+        char cwd[1000];
+        getcwd(cwd, 1000);
+        deepprompt(cwd, daddydir);
+        fflush(stdout);
+    }
 }
 
 void ctrl_z(int sig)
 {
     int pid, status, heh = 0;
-    // printf("yo\n");
-    if((getpid() != kash_id) && (last_boi.pid != -1))
+    
+    // printf("%d %d %d\n", getpid(), kash_id, last_boi.pid);
+    if(last_boi.pid != -1)
     {
+        // printf("yamero\n");
         back_bois++;
         strcpy(proc_list[back_bois].pname, last_boi.pname);
         proc_list[back_bois].pid = last_boi.pid;
-        kill(last_boi.pid, SIGTTIN);
-        kill(last_boi.pid, SIGTSTP);
+        // kill(last_boi.pid, SIGTTIN);
+        setpgid(last_boi.pid, 0);
+        kill(last_boi.pid, SIGSTOP);
+        // signal(SIGTSTP, SIG_IGN);
         printf("[%d] %d %s\n", back_bois, last_boi.pid, proc_list[back_bois].pname);
+        fflush(stdout);
     }
-    // signal(SIGTSTP, ctrl_z);
+    
+    // char cwd[1000];
+    // getcwd(cwd, sizeof(cwd));
+    // prompt(cwd ,daddydir);
+    // main();
+    signal(SIGTSTP, ctrl_z);
     return;
 }
 
@@ -65,12 +80,22 @@ void ctrl_c(int sig)
 {
     int pid, status, heh = 0;
     printf("\n");
-    if((getpid() != kash_id) && (last_boi.pid != -1))
-    {
+        // printf("%d %d %d\n", getpid(), kash_id, last_boi.pid);
+
+    if(last_boi.pid != -1)  // (getpid() != kash_id) && 
+    { 
         kill(last_boi.pid, SIGINT);
         // printf("\n");
         // fflush(NULL);
     }
+    else
+    {
+        char cwd[1000];
+        getcwd(cwd, 1000);
+        deepprompt(cwd, daddydir);
+        fflush(stdout);
+    }
+    
     // signal(SIGTSTP, ctrl_z);
     return;
 }

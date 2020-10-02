@@ -4,11 +4,11 @@
 void pinfo(char* args[])
 {
     // int id;
-    char fname[100] = "/proc/";
-    char xpname[100] = "/proc/";
-    char execu[100];
+    char fname[1000] = "/proc/";
+    char xpname[1000] = "/proc/";
+    char execu[1000];
     int blah;
-    char bla[100], status;
+    char bla[1000], status;
     unsigned long int m;
     if(args[1] == NULL)
     {

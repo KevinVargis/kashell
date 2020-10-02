@@ -4,6 +4,7 @@
 int main()
 {
     getcwd(daddydir, sizeof(daddydir));
+    strcpy(lwd, "~");
     buff  = (char *)calloc(20000, sizeof(char));
     siz = -1;
     back_bois = 0;
@@ -45,12 +46,13 @@ int main()
 
     while (1)
     {
+        fflush(stdout);
         char* parse;
         signal(SIGTSTP, ctrl_z);
         signal(SIGINT, ctrl_c);
         last_boi.pid = -1;
         // memset(parse, 0, sizeof(parse));
-        char* cmd[100];
+        char* cmd[1000];
         char cwd[1000];
         getcwd(cwd, sizeof(cwd));
         // strcat(cwd, "/yoo");
@@ -70,7 +72,7 @@ int main()
         }
         for(int p = 0; p < k; p++)
         {
-            char* pip[100];
+            char* pip[1000];
             int pipe_count = 0;
             cmd[p] = strtok(cmd[p], "|");
             while(cmd[p] != NULL)
@@ -165,6 +167,7 @@ int main()
                 // printf("%d %s", i%5, hist[i%5]);
             }
             fclose(fhis);
+            // getcwd(lwd, sizeof(lwd));
             // }
         }
     }

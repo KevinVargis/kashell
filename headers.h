@@ -15,10 +15,11 @@
 #ifndef __BUI_H
 #define __BUI_H
 char daddydir[1000];
+char lwd[1000];
 char* buff;
 char hist[20][1000];
 FILE* fhis;
 int siz, no[1];
-char hispath[200], hisnopath[200];
+char hispath[1000], hisnopath[1000];
 int fno, kash_id;
 #endif

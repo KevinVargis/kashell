@@ -3,7 +3,7 @@
 
 void exec(char pip[], int pipe_count)
 {
-    char* args[20];
+    char* args[200];
     memset(args, 0, sizeof(args));
     // for(int j = 0; args[j] != NULL; j++)
         // printf("1%s ", pip);
@@ -170,14 +170,14 @@ void exec(char pip[], int pipe_count)
     else if(strcmp(args[0], "unsetenv") == 0)
     {
         if(i <= 1)
-            printf("setenv: Too few arguments\n");
+            printf("unsetenv: Too few arguments\n");
         else if(i == 2)
         {
             if(unsetenv(args[1]) < 0)
-                perror("setenv");
+                perror("unsetenv");
         }
         else
-            printf("setenv: Too many arguments\n");
+            printf("unsetenv: Too many arguments\n");
         
         
     }

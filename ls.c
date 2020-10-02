@@ -1,7 +1,7 @@
 #include "ls.h"
 #include "headers.h"
 
-char old[100], name[100], tim[100];
+char old[1000], name[1000], tim[1000];
 int l;
 extern int optind;
 
@@ -16,8 +16,8 @@ void print_perm(char* path, char* args[], char* daddydir)
     // chk = mkdir(argv[3], 0700);         // chk will tell us if the dir is already created
     // chdir(path);
     
-    char s[100];
-    if(getcwd(s, 100) < 0)
+    char s[1000];
+    if(getcwd(s, 1000) < 0)
         perror("pwd");
     if(args != NULL)
     {
@@ -101,7 +101,7 @@ void ls(char* args[], int argc, char* daddydir)
 	// extern int optind;
     struct dirent* dir;
     char* path;
-    char pathdef[] = ".", s[200];
+    char pathdef[] = ".", s[1000];
     DIR* dp;
 
     optind = 1;

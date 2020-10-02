@@ -3,8 +3,8 @@
 
 void pwd()
 {
-    char s[100];
-    if(getcwd(s, 100) < 0)
+    char s[1000];
+    if(getcwd(s, 1000) < 0)
         perror("pwd");
     printf("%s\n", s);
 }

@@ -51,11 +51,11 @@ void jobs()
 {
     for(int i = 1; i <= back_bois; i++)
     {
-         char fname[100] = "/proc/";
+         char fname[1000] = "/proc/";
     // char xpname[100] = "/proc/";
     // char execu[100];
     int blah;
-    char bla[100], status;
+    char bla[1000], status;
     unsigned long int m;
 
     char num[10];
@@ -68,12 +68,12 @@ void jobs()
     FILE* f = fopen(fname, "r");
     fscanf(f, "%d %s %c %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %lu", &blah, bla, &status, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &blah, &m);
     // printf("Process Status -- %c\n", status);
-    if(status == 'R')
-        printf("[%d] Running %s [%d]\n", i, proc_list[i].pname, proc_list[i].pid);
+    if(status == 'T')
+        printf("[%d] Stopped %s [%d]\n", i, proc_list[i].pname, proc_list[i].pid);
     else
     {
         // strcpy(proc_list[back_bois].status, "Stopped");
-        printf("[%d] Stopped %s [%d]\n", i, proc_list[i].pname, proc_list[i].pid);
+        printf("[%d] Running %s [%d]\n", i, proc_list[i].pname, proc_list[i].pid);
     }
         
 
